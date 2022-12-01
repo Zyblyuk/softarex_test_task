@@ -19,20 +19,18 @@ if __name__ == '__main__':
     X = dataset.iloc[:, 0:columns_len - 1]
     Y = dataset.iloc[:, columns_len - 1]
 
-    modelRandForest = GridSearchCV(RandomForestRegressor(), {
+    params = {
         "max_depth": [4, 6, 8],
-        "n_estimators": [100, 500, 1000]})
+        "n_estimators": [100, 500, 1000]
+    }
 
-    modelExtraTrees = GridSearchCV(ExtraTreesRegressor(), {
-        "max_depth": [4, 6, 8],
-        "n_estimators": [100, 500, 1000]})
+    modelRandForest = GridSearchCV(RandomForestRegressor(), params)
 
-    modelXGBR = GridSearchCV(XGBRegressor(), {
-        "max_depth": [4, 6, 8],
-        "n_estimators": [100, 500, 1000]})
+    modelExtraTrees = GridSearchCV(ExtraTreesRegressor(), params)
 
-    DecisionTreeModel = GridSearchCV(DecisionTreeRegressor(), {
-        "max_depth": [4, 6, 8]})
+    modelXGBR = GridSearchCV(XGBRegressor(), params)
+
+    DecisionTreeModel = GridSearchCV(DecisionTreeRegressor(), {"max_depth": [4, 6, 8]})
 
     estimators = [('ExtraTrees', modelExtraTrees),
                   ('RandomForest', modelRandForest),
