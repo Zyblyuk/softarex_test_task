@@ -1,0 +1,70 @@
+{% extends "base_template.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3>Welcome, {{ user.get_username }}</h3>
+
+        <table>
+            <tr>
+                <td class="border-left">
+                    <a href="{% url 'logout'%}">
+                        <button class="btn-info">Logout</button>
+                    </a>
+
+                </td>
+
+                <td class="border-right">
+                    <a href="{% url 'history'%}">
+                        <button class="btn-info">History</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <form action="{% url 'home' %}" method="POST">
+            <section id="Send" class="bg-light py-5">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6 mx-auto">
+                      {% csrf_token %}
+                      <div class="card-body">
+                        <tr>
+                            <td><label><input type="number" step="any" name="OpenDate" placeholder="OpenDate"/></label></td>
+                            <td><label><input type="number" step="any" name="CityGroup" placeholder="CityGroup"/></label></td>
+                            <td><label><input type="number" step="any" name="P1" placeholder="P1"/></label></td>
+                            <td><label><input type="number" step="any" name="P2" placeholder="P2"/></label></td>
+                            <td><label><input type="number" step="any" name="P6" placeholder="P6"/></label></td>
+                            <td><label><input type="number" step="any" name="P7" placeholder="P7"/></label>
+                            <td><label><input type="number" step="any" name="P11" placeholder="P11"/></label></td>
+                            <td><label><input type="number" step="any" name="P17" placeholder="P17"/></label></td>
+                            <td><label><input type="number" step="any" name="P21" placeholder="P21"/></label></td>
+                            <td><label><input type="number" step="any" name="P22" placeholder="P22"/></label></td>
+                            <td><label><input type="number" step="any" name="P28" placeholder="P28"/></label></td>
+                        </tr>
+                      </div>
+                      <input type="submit" value="Send" class="btn btn-secondary btn-block">
+                  </div>
+                </div>
+              </div>
+            </section>
+        </form>
+
+    {% autoescape off %}
+        {{ revenue }}
+    {% endautoescape %}
+
+    {% else %}
+        <h3>Welcome. Please log in.</h3>
+
+        <a href="{% url 'login'%}">
+            <button class="btn-info">Login</button>
+        </a>
+
+        <a href="{% url 'register'%}">
+            <button class="btn-info">Register</button>
+        </a>
+
+    {% endif %}
+
+{% endblock %}

@@ -1,8 +1,7 @@
-csv
-income-prediction
+EnsembleTreeModel/csv
+EnsembleTreeModel/income-prediction
 doc
-ppp
 venv
 .idea
-test.py
 WeeklyReport
+.env
