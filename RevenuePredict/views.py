@@ -1,10 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.shortcuts import redirect
 
 from .models import TestTaskDB
 
 from .forms import NewUserForm
 from django.contrib.auth import login
 from django.contrib import messages
+
+from django.http import HttpResponse
+import json
+
+list_atr = ['OpenDate', 'CityGroup', 'P1',
+            'P2', 'P6', 'P7', 'P11', 'P17',
+            'P21', 'P22', 'P28']
 
 
 def register_request(request):
@@ -26,44 +34,71 @@ def register_request(request):
 def home(request):
     if request.method == 'POST':
         author = request.user
-        open_date = float(request.POST.get('OpenDate'))
-        city_group = float(request.POST.get('CityGroup'))
-        p1 = float(request.POST.get('P1'))
-        p2 = float(request.POST.get('P2'))
-        p6 = float(request.POST.get('P6'))
-        p7 = float(request.POST.get('P7'))
-        p11 = float(request.POST.get('P11'))
-        p17 = float(request.POST.get('P17'))
-        p21 = float(request.POST.get('P21'))
-        p22 = float(request.POST.get('P22'))
-        p28 = float(request.POST.get('P28'))
 
-        elem = TestTaskDB(author=author, OpenDate=open_date,
-                          CityGroup=city_group, P1=p1, P2=p2,
-                          P6=p6, P7=p7, P11=p11, P17=p17,
-                          P21=p21, P22=p22, P28=p28)
+        atr_dict = {}
+        for i in list_atr:
+            atr_dict[i] = request.POST.get(i)
 
-        revenue = elem.predict()
+        if 'send' in request.POST:
 
-        elem.revenue = revenue
-        elem.save()
+            elem = TestTaskDB(author=author, OpenDate=atr_dict['OpenDate'],
+                              CityGroup=atr_dict['CityGroup'], P1=atr_dict['P1'],
+                              P2=atr_dict['P2'], P6=atr_dict['P6'], P7=atr_dict['P7'],
+                              P11=atr_dict['P11'], P17=atr_dict['P17'], P21=atr_dict['P21'],
+                              P22=atr_dict['P22'], P28=atr_dict['P28'])
 
-        context = {
-            'revenue': revenue
-        }
+            if elem.check_empty():
+                context = {
+                    'ERROR': 'Fields must not be empty',
+                    'attribute_dict': atr_dict
+                }
+                return render(request, 'RevenuePredict/home.html', context)
 
-        return render(request, 'RevenuePredict/home.html', context)
+            else:
+                revenue = elem.predict()
+
+
+                elem.revenue = revenue
+                elem.save()
+
+                context = {
+                    'attribute_dict': atr_dict,
+                    'revenue': revenue
+                }
+                return render(request, 'RevenuePredict/home.html', context)
+
+        elif 'save_json' in request.POST:
+            atr_dict['revenue'] = request.POST.get('revenue')
+            response =  HttpResponse(json.dumps(atr_dict), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = f'inline; filename={request.user}_result.json'
+            return response
+
     else:
-        return render(request, 'RevenuePredict/home.html')
+        context = {
+            'list_atr': list_atr
+        }
+        return render(request, 'RevenuePredict/home.html', context)
 
 
 def history(request):
     if request.user.is_authenticated:
-        tt_db = TestTaskDB.objects.all()
+        tt_db = TestTaskDB.objects.all().filter(author=request.user)
 
         context = {
-            'items': tt_db
+            'db_list': tt_db
         }
-        return render(request, 'RevenuePredict/history.html', context)
+        if request.method == 'POST':
+            if 'clear_history' in request.POST:
+                tt_db.delete()
+                return render(request, 'RevenuePredict/history.html', context)
+            if 'save_json' in request.POST:
+                response = HttpResponse(json.dumps([i.get_dict() for i in tt_db]),
+                                        content_type="application/vnd.ms-excel")
+
+                response['Content-Disposition'] = f'inline; filename={request.user}_history.json'
+                return response
+
+        else:
+            return render(request, 'RevenuePredict/history.html', context)
     else:
         return redirect('login')

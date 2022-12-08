@@ -2,8 +2,30 @@ version: "3.9"
 
 services:
  postgres:
-    image: postgres
+    image: postgres:11
     ports:
-      - 5432:5432
-    env_file:
-      - .env
+      - "5432:5432"
+
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    restart: always
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+ test_task_app:
+  build: .
+  restart: always
+  command: >
+    sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+  ports:
+    - "8000:8000"
+  depends_on:
+     postgres:
+       condition: service_healthy

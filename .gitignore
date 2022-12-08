@@ -1,5 +1,9 @@
+EnsembleTreeModel/model/*
 EnsembleTreeModel/csv
 EnsembleTreeModel/income-prediction
+EnsembleTreeModel/__pycache__
+RevenuePredict/__pycache__
+TestTaskApp/__pycache__
 doc
 venv
 .idea

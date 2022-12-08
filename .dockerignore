@@ -1,0 +1,12 @@
+EnsembleTreeModel
+
+!EnsembleTreeModel/model
+!EnsembleTreeModel/predict.py
+doc
+venv
+.idea
+WeeklyReport
+
+.gitignore
+.git
+

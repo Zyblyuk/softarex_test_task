@@ -1,16 +1,36 @@
 {% extends "base_template.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}History{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
 
-        <a href="{% url 'home'%}">
-            <button class="btn-info">Back</button>
-        </a>
+        <a href="{% url 'home'%}"><button class="btn-info">Back</button></a>
 
-        <table>
-            {% for item in items %}
+        <form action="{% url 'history' %}" method="POST">
+            {% csrf_token %}
+            {% if db_list %}
+                <button name="clear_history" class="btn-info">Clear History</button>
+                <button name="save_json" class="btn-info">Save History</button>
+            {% endif %}
+        </form>
+
+        <table class="table">
+            <tr>
+                <th>OpenDate</th>
+                <th>CityGroup</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th>P6</th>
+                <th>P7</th>
+                <th>P11</th>
+                <th>P17</th>
+                <th>P21</th>
+                <th>P22</th>
+                <th>P28</th>
+                <th>revenue</th>
+            </tr>
+            {% for item in db_list %}
             <tr>
                 <td class="float_numbers">{{ item.OpenDate }}</td>
                 <td class="float_numbers">{{ item.CityGroup }}</td>
@@ -27,8 +47,5 @@
             </tr>
             {% endfor %}
         </table>
-    {% else %}
-
     {% endif %}
-
 {% endblock %}

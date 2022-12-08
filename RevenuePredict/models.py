@@ -23,7 +23,26 @@ class TestTaskDB(models.Model):
     revenue = models.FloatField(null=True, blank=True)
 
     def predict(self):
-        l = [self.OpenDate, self.CityGroup, self.P1,
+        """Get predict from EnsembleTreeModel"""
+        l_art = [self.OpenDate, self.CityGroup, self.P1,
              self.P2, self.P6, self.P7, self.P11,
              self.P17, self.P21, self.P22, self.P28]
-        return predict(l)
+        return predict(l_art)
+
+    def check_empty(self):
+        """Return True if some attribute empty"""
+        l_art = [self.OpenDate, self.CityGroup, self.P1,
+             self.P2, self.P6, self.P7, self.P11,
+             self.P17, self.P21, self.P22, self.P28]
+        for i in l_art:
+            if not i:
+                return True
+        return False
+
+    def get_dict(self):
+        return {
+            'OpenDate': self.OpenDate, 'CityGroup': self.CityGroup,
+            'P1': self.P1, 'P2': self.P2, 'P6': self.P6,
+            'P7': self.P7, 'P11': self.P11, 'P17': self.P17,
+            'P21': self.P21, 'P22': self.P22, 'P28': self.P28
+        }

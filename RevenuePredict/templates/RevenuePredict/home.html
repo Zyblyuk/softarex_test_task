@@ -22,6 +22,7 @@
                 </td>
             </tr>
         </table>
+
         <form action="{% url 'home' %}" method="POST">
             <section id="Send" class="bg-light py-5">
               <div class="container">
@@ -29,30 +30,54 @@
                   <div class="col-md-6 mx-auto">
                       {% csrf_token %}
                       <div class="card-body">
-                        <tr>
-                            <td><label><input type="number" step="any" name="OpenDate" placeholder="OpenDate"/></label></td>
-                            <td><label><input type="number" step="any" name="CityGroup" placeholder="CityGroup"/></label></td>
-                            <td><label><input type="number" step="any" name="P1" placeholder="P1"/></label></td>
-                            <td><label><input type="number" step="any" name="P2" placeholder="P2"/></label></td>
-                            <td><label><input type="number" step="any" name="P6" placeholder="P6"/></label></td>
-                            <td><label><input type="number" step="any" name="P7" placeholder="P7"/></label>
-                            <td><label><input type="number" step="any" name="P11" placeholder="P11"/></label></td>
-                            <td><label><input type="number" step="any" name="P17" placeholder="P17"/></label></td>
-                            <td><label><input type="number" step="any" name="P21" placeholder="P21"/></label></td>
-                            <td><label><input type="number" step="any" name="P22" placeholder="P22"/></label></td>
-                            <td><label><input type="number" step="any" name="P28" placeholder="P28"/></label></td>
-                        </tr>
+                          <tr>
+                              {% for key, value in attribute_dict.items %}
+                              <td>
+                                  <label>
+                                      {% if key == "CityGroup" %}
+                                      <input type="number" min="0" max="1" value="{{ value }}"
+                                             name="{{ key }}" placeholder="{{ key }}"/>
+
+                                      {% else %}
+                                      <input type="number" step="any" min="0" max="1" value="{{ value }}"
+                                             name="{{ key }}" placeholder="{{ key }}"/>
+                                      {% endif %}
+
+                                  </label>
+                              </td>
+                              {% endfor %}
+
+                              {% for field_name in list_atr %}
+                              <td>
+                                  <label>
+                                      <input type="number" step="any" min="0" max="1"
+                                             name="{{ field_name }}" placeholder="{{ field_name }}"/>
+                                  </label>
+                              </td>
+                              {% endfor %}
+                          </tr>
                       </div>
-                      <input type="submit" value="Send" class="btn btn-secondary btn-block">
+
+                      <div class="alert-warning">
+                          {{ ERROR }}
+                      </div>
+
+                      {% if revenue %}
+                      <div class="form-group">
+                          <h4><i class="fas fa-sign-in-alt">
+                              <label>
+                                  <input type="text" name="revenue" value="{{ revenue }}" readonly>
+                              </label>
+                          </i></h4>
+                      </div>
+                      <input name="save_json" type="submit" value="Save to Json file" class="btn btn-secondary btn-block">
+                      {% endif %}
+                      <input name="send" type="submit" value="Send" class="btn btn-secondary btn-block">
                   </div>
                 </div>
               </div>
             </section>
         </form>
-
-    {% autoescape off %}
-        {{ revenue }}
-    {% endautoescape %}
 
     {% else %}
         <h3>Welcome. Please log in.</h3>
@@ -68,3 +93,13 @@
     {% endif %}
 
 {% endblock %}
+
+<script>
+    var fname = document.getElementById("fname");
+    fname.addEventListener("input", () => {
+        if (fname.validity.tooLong || fname.validity.tooShort || fname.validity.valueMissing) {
+            fname.setCustomValidity("Name must be 2-8 characters.");
+            fname.reportValidity();
+        } else { fname.setCustomValidity(""); }
+    });
+</script>
