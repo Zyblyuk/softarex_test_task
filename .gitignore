@@ -1,6 +1,7 @@
 EnsembleTreeModel/model/EnsembleTreeModel.pkl
 EnsembleTreeModel/csv
 EnsembleTreeModel/income-prediction
+RevenuePredict/migrations
 EnsembleTreeModel/__pycache__
 RevenuePredict/__pycache__
 TestTaskApp/__pycache__
