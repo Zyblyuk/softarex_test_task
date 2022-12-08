@@ -1,4 +1,4 @@
-EnsembleTreeModel/model/*
+EnsembleTreeModel/model/EnsembleTreeModel.pkl
 EnsembleTreeModel/csv
 EnsembleTreeModel/income-prediction
 EnsembleTreeModel/__pycache__
