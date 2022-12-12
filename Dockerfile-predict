@@ -1,0 +1,13 @@
+FROM python:3.8.10
+
+ENV PYTHONUNBUFFERED 1
+ADD requirements-predict.txt requirements.txt
+RUN pip install -r requirements.txt
+
+ADD EnsembleTreeModel EnsembleTreeModel
+WORKDIR EnsembleTreeModel
+RUN mkdir csv
+RUN mkdir model
+
+RUN python preprocessing.py
+RUN python TrainEnsembleTreeModel.py

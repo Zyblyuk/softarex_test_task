@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from EnsembleTreeModel.predict import predict
+import requests
 
 
 class TestTaskDB(models.Model):
@@ -24,10 +24,16 @@ class TestTaskDB(models.Model):
 
     def predict(self):
         """Get predict from EnsembleTreeModel"""
-        l_art = [self.OpenDate, self.CityGroup, self.P1,
-             self.P2, self.P6, self.P7, self.P11,
-             self.P17, self.P21, self.P22, self.P28]
-        return predict(l_art)
+
+        query_dict = {
+            'OpenDate': self.OpenDate, 'CityGroup': self.CityGroup,
+            'P1': self.P1, 'P2': self.P2, 'P6': self.P6,
+            'P7': self.P7, 'P11': self.P11, 'P17': self.P17,
+            'P21': self.P21, 'P22': self.P22, 'P28': self.P28
+        }
+
+        response = requests.get('http://predict_api:9876/predict', query_dict)
+        return response.json()['revenue']
 
     def check_empty(self):
         """Return True if some attribute empty"""

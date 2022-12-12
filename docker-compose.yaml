@@ -3,15 +3,17 @@ version: "3.9"
 services:
  postgres:
     image: postgres:11
-    ports:
-      - "5432:5432"
 
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
+
     restart: always
+
+    ports:
+      - "5432:5432"
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -19,13 +21,40 @@ services:
       timeout: 5s
       retries: 5
 
- test_task_app:
-  build: .
+ predict_api:
+  build:
+    dockerfile: Dockerfile-predict
+    context: .
+
+  environment:
+    - FLASK_RUN_HOST=predict_api
+    - FLASK_ENV=development
+    - FLASK_DEBUG=0
+    - FLASK_PORT=9876
+
+  command: >
+    sh -c "python predictAPI.py"
+
   restart: always
+
+  ports:
+    - "9876:9876"
+
+ test_task_app:
+  build:
+   dockerfile: Dockerfile-app
+   context: .
+
   command: >
     sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  restart: always
+
   ports:
     - "8000:8000"
+
   depends_on:
+     predict_api:
+       condition: service_started
      postgres:
        condition: service_healthy

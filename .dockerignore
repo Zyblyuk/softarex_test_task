@@ -1,7 +1,10 @@
 EnsembleTreeModel
 
-!EnsembleTreeModel/model
-!EnsembleTreeModel/predict.py
+!EnsembleTreeModel/predictAPI.py
+!EnsembleTreeModel/preprocessing.py
+!EnsembleTreeModel/TrainEnsembleTreeModel.py
+!EnsembleTreeModel/income-prediction
+
 doc
 venv
 .idea
