@@ -5,6 +5,7 @@ EnsembleTreeModel
 !EnsembleTreeModel/TrainEnsembleTreeModel.py
 !EnsembleTreeModel/income-prediction
 
+images
 doc
 venv
 .idea
