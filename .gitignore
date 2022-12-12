@@ -10,3 +10,4 @@ venv
 .idea
 WeeklyReport
 .env
+test.py
