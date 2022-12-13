@@ -4,5 +4,5 @@ ENV PYTHONUNBUFFERED 1
 ADD requirements-app.txt requirements.txt
 RUN pip install -r requirements.txt
 
-ADD . softarex_test_task
+VOLUME . softarex_test_task
 WORKDIR softarex_test_task
