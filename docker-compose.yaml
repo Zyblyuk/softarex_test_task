@@ -27,9 +27,6 @@ services:
     dockerfile: Dockerfile-predict
     context: .
 
-  volumes:
-    - .:/softarex_test_task
-
   environment:
     - FLASK_RUN_HOST=predict_api
     - FLASK_ENV=development
@@ -49,9 +46,6 @@ services:
    dockerfile: Dockerfile-app
    context: .
 
-  volumes:
-    - /EnsembleTreeModel:/EnsembleTreeModel
-
   command: >
     sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
@@ -62,6 +56,6 @@ services:
 
   depends_on:
      predict_api:
-       condition: service_started
+        condition: service_started
      postgres:
-       condition: service_healthy
+        condition: service_healthy
