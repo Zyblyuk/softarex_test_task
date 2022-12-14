@@ -2,7 +2,12 @@
 ###### Zyblyuk Roman
 
 
-# Запуск Проекта 
+# Запуск Проекта
+
+Нужно скачать данный [по ссылке](https://drive.google.com/file/d/156z3O_wkgRU4REbalXBmG9Vup5jJ4cA-/view) и забросить их в папку EnsembleTreeModel,
+чтобы было EnsembleTreeModel/income-prediction/train.csv
+
+
 Проект запускается командой в терминале:
 ```
 docker-compose up 
