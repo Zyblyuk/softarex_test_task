@@ -1,0 +1,24 @@
+{% extends "base_template.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container py-5">
+            <h3>Edit your profile {{ username }}:</h3>
+            <a href="{% url 'home'%}"><button class="btn-info">Back</button></a>
+
+            <form action="{% url 'profile' %}" method="POST">
+                    {% csrf_token %}
+                <table>
+                    <br>
+                    {{ profile_form.as_table }}
+                </table>
+                <input name="submit" type="submit" value="Submit">
+            </form>
+        </div>
+
+    {% endif %}
+{% endblock %}

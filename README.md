@@ -29,3 +29,9 @@ docker-compose up
 Есть возможность сохранять результат в .json формате, так же можно смотреть и сохранять историю:
 
 ![alt text](https://github.com/Zyblyuk/softarex_test_task/blob/master/images/history.png)
+
+Добавлена возможность редактировать профиль:
+
+![alt text](https://github.com/Zyblyuk/softarex_test_task/blob/master/images/profile1.png)
+![alt text](https://github.com/Zyblyuk/softarex_test_task/blob/master/images/profile2.png)
+

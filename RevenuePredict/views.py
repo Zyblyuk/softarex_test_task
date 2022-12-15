@@ -4,8 +4,13 @@ from django.shortcuts import redirect
 from .models import TestTaskDB
 
 from .forms import NewUserForm
+from .forms import ProfileForm
+from .forms import PredictTableForm
+
 from django.contrib.auth import login
 from django.contrib import messages
+
+from django.urls import reverse_lazy
 
 from django.http import HttpResponse
 import json
@@ -24,14 +29,15 @@ def register_request(request):
             messages.success(request, "Registration successful.")
             return redirect('/')
         messages.error(request, "Unsuccessful registration. Invalid information.")
-    form = NewUserForm()
 
+    form = NewUserForm()
     return render(request=request,
                   template_name="registration/register.html",
                   context={"register_form": form})
 
 
 def home(request):
+    form = PredictTableForm()
     if request.method == 'POST':
         author = request.user
 
@@ -39,7 +45,8 @@ def home(request):
         for i in list_atr:
             atr_dict[i] = request.POST.get(i)
 
-        if 'send' in request.POST:
+        if 'submit' in request.POST:
+            form = PredictTableForm(atr_dict)
 
             elem = TestTaskDB(author=author, OpenDate=atr_dict['OpenDate'],
                               CityGroup=atr_dict['CityGroup'], P1=atr_dict['P1'],
@@ -47,25 +54,18 @@ def home(request):
                               P11=atr_dict['P11'], P17=atr_dict['P17'], P21=atr_dict['P21'],
                               P22=atr_dict['P22'], P28=atr_dict['P28'])
 
-            if elem.check_empty():
-                context = {
-                    'ERROR': 'Fields must not be empty',
-                    'attribute_dict': atr_dict
-                }
-                return render(request, 'RevenuePredict/home.html', context)
-
-            else:
-                revenue = elem.predict()
+            revenue = elem.predict()
 
 
-                elem.revenue = revenue
-                elem.save()
+            elem.revenue = revenue
+            elem.save()
 
-                context = {
-                    'attribute_dict': atr_dict,
-                    'revenue': revenue
-                }
-                return render(request, 'RevenuePredict/home.html', context)
+            context = {
+                'attribute_dict': atr_dict,
+                'revenue': revenue,
+                'predict_table_form': form
+            }
+            return render(request, 'RevenuePredict/home.html', context)
 
         elif 'save_json' in request.POST:
             atr_dict['revenue'] = request.POST.get('revenue')
@@ -75,7 +75,8 @@ def home(request):
 
     else:
         context = {
-            'list_atr': list_atr
+            'list_atr': list_atr,
+            'predict_table_form': form
         }
         return render(request, 'RevenuePredict/home.html', context)
 
@@ -100,5 +101,35 @@ def history(request):
 
         else:
             return render(request, 'RevenuePredict/history.html', context)
+    else:
+        return redirect('login')
+
+
+def profile(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            request.user.username = request.POST.get('new_username')
+            request.user.email = request.POST.get('new_email')
+            request.user.save()
+
+            login(request, request.user)
+
+            messages.success(request, "Edit successful.")
+
+            return redirect('/profile')
+
+        username = request.user.username
+        email = request.user.email
+
+
+        profile_form = ProfileForm(default_username=username, default_email=email)
+
+
+        context = {
+            'username': username,
+            'profile_form': profile_form
+
+        }
+        return render(request, 'RevenuePredict/profile.html', context)
     else:
         return redirect('login')

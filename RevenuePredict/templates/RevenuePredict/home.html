@@ -20,63 +20,28 @@
                         <button class="btn-info">History</button>
                     </a>
                 </td>
+
+                <td class="border-right">
+                    <a href="{% url 'profile'%}">
+                        <button class="btn-info">Profile</button>
+                    </a>
+                </td>
             </tr>
         </table>
 
         <form action="{% url 'home' %}" method="POST">
-            <section id="Send" class="bg-light py-5">
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-6 mx-auto">
-                      {% csrf_token %}
-                      <div class="card-body">
-                          <tr>
-                              {% for key, value in attribute_dict.items %}
-                              <td>
-                                  <label>
-                                      {% if key == "CityGroup" %}
-                                      <input type="number" min="0" max="1" value="{{ value }}"
-                                             name="{{ key }}" placeholder="{{ key }}"/>
+            {% csrf_token %}
+            <table>
+                <br>
+                {{ predict_table_form.as_table }}
+            </table>
 
-                                      {% else %}
-                                      <input type="number" step="any" min="0" max="1" value="{{ value }}"
-                                             name="{{ key }}" placeholder="{{ key }}"/>
-                                      {% endif %}
-
-                                  </label>
-                              </td>
-                              {% endfor %}
-
-                              {% for field_name in list_atr %}
-                              <td>
-                                  <label>
-                                      <input type="number" step="any" min="0" max="1"
-                                             name="{{ field_name }}" placeholder="{{ field_name }}"/>
-                                  </label>
-                              </td>
-                              {% endfor %}
-                          </tr>
-                      </div>
-
-                      <div class="alert-warning">
-                          {{ ERROR }}
-                      </div>
-
-                      {% if revenue %}
-                      <div class="form-group">
-                          <h4><i class="fas fa-sign-in-alt">
-                              <label>
-                                  <input type="text" name="revenue" value="{{ revenue }}" readonly>
-                              </label>
-                          </i></h4>
-                      </div>
-                      <input name="save_json" type="submit" value="Save to Json file" class="btn btn-secondary btn-block">
-                      {% endif %}
-                      <input name="send" type="submit" value="Send" class="btn btn-secondary btn-block">
-                  </div>
-                </div>
-              </div>
-            </section>
+            {% if revenue %}
+                <label><input type="text" name="revenue" value="{{ revenue }}" readonly></label>
+            {% endif %}
+            <br>
+            <input name="submit" type="submit" value="Submit">
+            <input name="save_json" type="submit" value="Save to Json file">
         </form>
 
     {% else %}
@@ -91,15 +56,4 @@
         </a>
 
     {% endif %}
-
 {% endblock %}
-
-<script>
-    var fname = document.getElementById("fname");
-    fname.addEventListener("input", () => {
-        if (fname.validity.tooLong || fname.validity.tooShort || fname.validity.valueMissing) {
-            fname.setCustomValidity("Name must be 2-8 characters.");
-            fname.reportValidity();
-        } else { fname.setCustomValidity(""); }
-    });
-</script>
