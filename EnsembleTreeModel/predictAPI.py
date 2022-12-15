@@ -30,7 +30,9 @@ def user():
     return response
 
 
-
 if __name__ == "__main__":
-    app.run(host=os.environ["FLASK_RUN_HOST"],
-            port=int(os.environ["FLASK_PORT"]))
+
+    host = os.environ["FLASK_RUN_HOST"],
+    port = int(os.environ["FLASK_PORT"]),
+
+    app.run(host=host[0], port=port[0], debug=False)

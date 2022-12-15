@@ -28,10 +28,8 @@ services:
     context: .
 
   environment:
-    - FLASK_RUN_HOST=predict_api
-    - FLASK_ENV=development
-    - FLASK_DEBUG=0
-    - FLASK_PORT=9876
+    - FLASK_RUN_HOST=${PREDICT_API_HOST}
+    - FLASK_PORT=${PREDICT_API_PORT}
 
   command: >
     sh -c "python predictAPI.py"
@@ -45,10 +43,10 @@ services:
   build:
    dockerfile: Dockerfile-app
    context: .
-
   command: >
-    sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-
+   sh -c "python manage.py makemigrations RevenuePredict
+          python manage.py migrate
+          python manage.py runserver 0.0.0.0:8000"
   restart: always
 
   ports:

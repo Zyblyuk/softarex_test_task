@@ -4,6 +4,7 @@ EnsembleTreeModel
 !EnsembleTreeModel/preprocessing.py
 !EnsembleTreeModel/TrainEnsembleTreeModel.py
 !EnsembleTreeModel/income-prediction
+RevenuePredict/migrations
 
 images
 doc

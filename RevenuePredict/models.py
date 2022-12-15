@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 import requests
+from decouple import config
 
 
 class TestTaskDB(models.Model):
@@ -32,7 +33,9 @@ class TestTaskDB(models.Model):
             'P21': self.P21, 'P22': self.P22, 'P28': self.P28
         }
 
-        response = requests.get('http://predict_api:9876/predict', query_dict)
+        host = config('PREDICT_API_HOST')
+        port = config('PREDICT_API_PORT')
+        response = requests.get(f"http://{host}:{port}/predict", query_dict)
         return response.json()['revenue']
 
     def check_empty(self):
