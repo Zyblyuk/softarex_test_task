@@ -1,8 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-import requests
-from decouple import config
+from kafka import KafkaProducer
+from kafka import KafkaConsumer
+
+import json
+
+producer = KafkaProducer(
+    bootstrap_servers='kafka:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+)
+
+consumer = KafkaConsumer(
+    'revenue',
+    bootstrap_servers='kafka:9092'
+)
 
 
 class TestTaskDB(models.Model):
@@ -26,31 +38,21 @@ class TestTaskDB(models.Model):
     def predict(self):
         """Get predict from EnsembleTreeModel"""
 
-        query_dict = {
-            'OpenDate': self.OpenDate, 'CityGroup': self.CityGroup,
-            'P1': self.P1, 'P2': self.P2, 'P6': self.P6,
-            'P7': self.P7, 'P11': self.P11, 'P17': self.P17,
-            'P21': self.P21, 'P22': self.P22, 'P28': self.P28
-        }
+        query_dict = self.get_dict()
 
-        host = config('PREDICT_API_HOST')
-        port = config('PREDICT_API_PORT')
-        response = requests.get(f"http://{host}:{port}/predict", query_dict)
-        return response.json()['revenue']
+        hash_id = hash(frozenset(query_dict.items()))
+        producer.send('query_dict', {'params': query_dict, 'hash_id': hash_id})
+        producer.flush()
 
-    def check_empty(self):
-        """Return True if some attribute empty"""
-        l_art = [self.OpenDate, self.CityGroup, self.P1,
-             self.P2, self.P6, self.P7, self.P11,
-             self.P17, self.P21, self.P22, self.P28]
-        for i in l_art:
-            if not i:
-                return True
-        return False
+        for message in consumer:
+            msg = json.loads(message.value.decode('utf-8'))
+
+            if msg['hash_id'] == hash_id:
+                return msg['revenue']
 
     def get_dict(self):
         return {
-            'OpenDate': self.OpenDate, 'CityGroup': self.CityGroup,
+            'Open Date': self.OpenDate, 'City Group': self.CityGroup,
             'P1': self.P1, 'P2': self.P2, 'P6': self.P6,
             'P7': self.P7, 'P11': self.P11, 'P17': self.P17,
             'P21': self.P21, 'P22': self.P22, 'P28': self.P28

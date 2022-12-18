@@ -21,6 +21,45 @@ services:
       timeout: 5s
       retries: 5
 
+ zookeeper:
+    image: confluentinc/cp-zookeeper:6.1.1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+ kafka:
+    image: confluentinc/cp-kafka:6.1.1
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+    expose:
+      - '29092'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_MIN_INSYNC_REPLICAS: '1'
+
+ init-kafka:
+    image: confluentinc/cp-kafka:6.1.1
+    depends_on:
+      - kafka
+    command: >
+      sh -c " 
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      kafka-topics --bootstrap-server kafka:29092 \
+                   --create --if-not-exists --topic revenue \
+                   --replication-factor 1 --partitions 1
+      
+      kafka-topics --bootstrap-server kafka:29092 \
+                   --create --if-not-exists --topic query_dict \
+                   --replication-factor 1 --partitions 1
+      "
 
  predict_api:
   build:
@@ -28,34 +67,40 @@ services:
     context: .
 
   environment:
-    - FLASK_RUN_HOST=${PREDICT_API_HOST}
-    - FLASK_PORT=${PREDICT_API_PORT}
+    - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+    - MODEL_DIR=${MODEL_DIR}
 
   command: >
     sh -c "python predictAPI.py"
 
   restart: always
 
+  depends_on:
+    init-kafka:
+      condition: service_completed_successfully
+
   ports:
     - "9876:9876"
 
  test_task_app:
   build:
-   dockerfile: Dockerfile-app
-   context: .
+    dockerfile: Dockerfile-app
+    context: .
+
   command: >
    sh -c "python manage.py makemigrations RevenuePredict
           python manage.py migrate
           python manage.py runserver 0.0.0.0:8000"
+
   restart: always
 
   ports:
     - "8000:8000"
 
   depends_on:
+     init-kafka:
+        condition: service_started
      predict_api:
         condition: service_started
      postgres:
         condition: service_healthy
-
-

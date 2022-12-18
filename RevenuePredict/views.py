@@ -10,8 +10,6 @@ from .forms import PredictTableForm
 from django.contrib.auth import login
 from django.contrib import messages
 
-from django.urls import reverse_lazy
-
 from django.http import HttpResponse
 import json
 
@@ -27,10 +25,12 @@ def register_request(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
+
             return redirect('/')
         messages.error(request, "Unsuccessful registration. Invalid information.")
 
     form = NewUserForm()
+
     return render(request=request,
                   template_name="registration/register.html",
                   context={"register_form": form})
@@ -56,7 +56,6 @@ def home(request):
 
             revenue = elem.predict()
 
-
             elem.revenue = revenue
             elem.save()
 
@@ -65,12 +64,15 @@ def home(request):
                 'revenue': revenue,
                 'predict_table_form': form
             }
+
             return render(request, 'RevenuePredict/home.html', context)
 
         elif 'save_json' in request.POST:
             atr_dict['revenue'] = request.POST.get('revenue')
+
             response =  HttpResponse(json.dumps(atr_dict), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = f'inline; filename={request.user}_result.json'
+
             return response
 
     else:
@@ -78,6 +80,7 @@ def home(request):
             'list_atr': list_atr,
             'predict_table_form': form
         }
+
         return render(request, 'RevenuePredict/home.html', context)
 
 
@@ -91,12 +94,15 @@ def history(request):
         if request.method == 'POST':
             if 'clear_history' in request.POST:
                 tt_db.delete()
+
                 return render(request, 'RevenuePredict/history.html', context)
+
             if 'save_json' in request.POST:
                 response = HttpResponse(json.dumps([i.get_dict() for i in tt_db]),
                                         content_type="application/vnd.ms-excel")
 
                 response['Content-Disposition'] = f'inline; filename={request.user}_history.json'
+
                 return response
 
         else:
@@ -130,6 +136,7 @@ def profile(request):
             'profile_form': profile_form
 
         }
+
         return render(request, 'RevenuePredict/profile.html', context)
     else:
         return redirect('login')

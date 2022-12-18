@@ -1,38 +1,47 @@
-import pickle
+from kafka import KafkaProducer
+from kafka import KafkaConsumer
 import pandas as pd
-
-from flask import Flask
-from flask import request
-from flask import json
+import pickle
+import json
 import os
 
-app = Flask(__name__)
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
-columns = ['Open Date', 'City Group',
-           'P1', 'P2', 'P6', 'P7','P11',
-           'P17', 'P21', 'P22', 'P28']
-
-filename = 'model/EnsembleTreeModel.pkl'
+filename = os.environ["MODEL_DIR"]
 model = pickle.load(open(filename, 'rb'))
 
-@app.route('/predict')
-def user():
-    x_data = [request.args.get(i.replace(' ', '')) for i in columns]
-    data = pd.DataFrame([x_data], columns=columns).astype('float64')
+producer = KafkaProducer(
+    bootstrap_servers='kafka:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+)
 
+consumer = KafkaConsumer(
+    'query_dict',
+    bootstrap_servers='kafka:9092'
+)
+
+
+def predict_and_send(msg):
+    msg = json.loads(msg.value.decode('utf-8'))
+    params = msg['params']
+    hash_id = msg['hash_id']
+
+    data = pd.DataFrame(params, index=[0]).astype('float64')
     revenue = model.predict(data)[0]
-    response = app.response_class(
-        response=json.dumps({'revenue': revenue}),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
+
+    params['revenue'] = revenue
+    logging.info(params)
+
+    producer.send('revenue', {'revenue': revenue, 'hash_id': hash_id})
+    producer.flush()
 
 
 if __name__ == "__main__":
-
-    host = os.environ["FLASK_RUN_HOST"],
-    port = int(os.environ["FLASK_PORT"]),
-
-    app.run(host=host[0], port=port[0], debug=False)
+    for message in consumer:
+        try:
+            predict_and_send(message)
+        except Exception as e:
+            logging.error(e)
+            continue
