@@ -1,5 +1,5 @@
-from kafka import KafkaProducer
-from kafka import KafkaConsumer
+from kafka import KafkaProducer, KafkaConsumer
+
 import pandas as pd
 import pickle
 import json
@@ -7,19 +7,24 @@ import os
 
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=os.environ.get("LOGGING_LEVEL"))
 
-filename = os.environ["MODEL_DIR"]
+kafka_host = os.environ.get("KAFKA_HOST")
+kafka_port = os.environ.get("KAFKA_PORT")
+
+bootstrap_servers = f'{kafka_host}:{kafka_port}'
+
+filename = os.environ.get("MODEL_DIR")
 model = pickle.load(open(filename, 'rb'))
 
 producer = KafkaProducer(
-    bootstrap_servers='kafka:9092',
+    bootstrap_servers=bootstrap_servers,
     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 )
 
 consumer = KafkaConsumer(
     'query_dict',
-    bootstrap_servers='kafka:9092'
+    bootstrap_servers=bootstrap_servers
 )
 
 

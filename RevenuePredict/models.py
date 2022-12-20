@@ -4,16 +4,22 @@ from django.contrib.auth.models import User
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 
+from decouple import config
 import json
 
+kafka_host = config('KAFKA_HOST')
+kafka_port = config('KAFKA_PORT')
+
+bootstrap_servers = f'{kafka_host}:{kafka_port}'
+
 producer = KafkaProducer(
-    bootstrap_servers='kafka:9092',
+    bootstrap_servers=bootstrap_servers,
     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 )
 
 consumer = KafkaConsumer(
     'revenue',
-    bootstrap_servers='kafka:9092'
+    bootstrap_servers=bootstrap_servers
 )
 
 

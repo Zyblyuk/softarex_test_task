@@ -1,11 +1,8 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 
 from .models import TestTaskDB
 
-from .forms import NewUserForm
-from .forms import ProfileForm
-from .forms import PredictTableForm
+from .forms import NewUserForm, ProfileForm, PredictTableForm
 
 from django.contrib.auth import login
 from django.contrib import messages

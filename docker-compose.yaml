@@ -67,7 +67,8 @@ services:
     context: .
 
   environment:
-    - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+    - KAFKA_HOST=${KAFKA_HOST}
+    - KAFKA_PORT=${KAFKA_PORT}
     - MODEL_DIR=${MODEL_DIR}
 
   command: >
