@@ -1,0 +1,17 @@
+EnsembleTreeModel
+
+!EnsembleTreeModel/predictAPI.py
+!EnsembleTreeModel/preprocessing.py
+!EnsembleTreeModel/TrainEnsembleTreeModel.py
+!EnsembleTreeModel/income-prediction
+RevenuePredict/migrations
+
+images
+doc
+venv
+.idea
+WeeklyReport
+
+.gitignore
+.git
+

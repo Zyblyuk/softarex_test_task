@@ -1,0 +1,9 @@
+,RMSE,Normalized MSE
+DecisionTreeRegressor,1834037.4,0.1116
+ExtraTreesRegressor,1728663.3,0.2017
+RandomForestRegressor,1742955.1,0.1550
+XGBRegressor,1705978.2,0.1516
+modelCustomBagging,2025088.4,0.2094
+VotingRegressor,1568860.5,0.1222
+VotingRegressor,1568860.5,0.1222
+TorchNeuralRegression,2746375.0,0.1385

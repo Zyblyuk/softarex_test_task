@@ -63,10 +63,15 @@ services:
 
  predict_api:
   build:
+    context: ./${VERSION}
     dockerfile: Dockerfile-predict
-    context: .
+
+  env_file:
+    - .env
 
   environment:
+    - FLASK_RUN_HOST=${PREDICT_API_HOST}
+    - FLASK_PORT=${PREDICT_API_PORT}
     - KAFKA_HOST=${KAFKA_HOST}
     - KAFKA_PORT=${KAFKA_PORT}
     - MODEL_DIR=${MODEL_DIR}
@@ -85,8 +90,11 @@ services:
 
  test_task_app:
   build:
+    context: ./${VERSION}
     dockerfile: Dockerfile-app
-    context: .
+
+  env_file:
+    - .env
 
   command: >
    sh -c "python manage.py makemigrations RevenuePredict
