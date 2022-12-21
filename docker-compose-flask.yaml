@@ -30,6 +30,11 @@ services:
   env_file:
     - .env
 
+  environment:
+    - FLASK_RUN_HOST=${PREDICT_API_HOST}
+    - FLASK_PORT=${PREDICT_API_PORT}
+    - MODEL_DIR=${MODEL_DIR}
+
   command: >
     sh -c "python predictAPI.py"
 

@@ -70,8 +70,6 @@ services:
     - .env
 
   environment:
-    - FLASK_RUN_HOST=${PREDICT_API_HOST}
-    - FLASK_PORT=${PREDICT_API_PORT}
     - KAFKA_HOST=${KAFKA_HOST}
     - KAFKA_PORT=${KAFKA_PORT}
     - MODEL_DIR=${MODEL_DIR}
