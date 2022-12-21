@@ -1,18 +1,8 @@
-flask_version/EnsembleTreeModel/model/EnsembleTreeModel.pkl
-flask_version/EnsembleTreeModel/csv
-flask_version/EnsembleTreeModel/income-prediction
-flask_version/RevenuePredict/migrations
-flask_version/EnsembleTreeModel/__pycache__
-flask_version/RevenuePredict/__pycache__
-flask_version/TestTaskApp/__pycache__
-
-kafka_version/EnsembleTreeModel/model/EnsembleTreeModel.pkl
-kafka_version/EnsembleTreeModel/csv
-kafka_version/EnsembleTreeModel/income-prediction
-kafka_version/RevenuePredict/migrations
-kafka_version/EnsembleTreeModel/__pycache__
-kafka_version/RevenuePredict/__pycache__
-kafka_version/TestTaskApp/__pycache__
+*__pycache__*
+*income-prediction*
+*migrations*
+*csv*
+*EnsembleTreeModel.pkl*
 
 doc
 venv
