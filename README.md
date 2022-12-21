@@ -4,8 +4,14 @@
 
 # Запуск Проекта
 
-Нужно скачать данный [по ссылке](https://drive.google.com/file/d/156z3O_wkgRU4REbalXBmG9Vup5jJ4cA-/view) и забросить их в папку EnsembleTreeModel,
-чтобы было EnsembleTreeModel/income-prediction/train.csv
+В проекте реализованно две версии kafka и flask, для того, чтобы выбрать нужную,
+необходимо указать в .env файле поле VERSION.
+Для kafka VERSION=kafka_version, для flask VERSION=flask_version
+
+Нужно скачать данный [по ссылке](https://drive.google.com/file/d/156z3O_wkgRU4REbalXBmG9Vup5jJ4cA-/view) 
+и забросить их в папку EnsembleTreeModel,
+чтобы было $(VERSION)/EnsembleTreeModel/income-prediction/train.csv,
+где $(VERSION) выбранная вами версия, либо "flask_version", либо "kafka_version"
 
 
 Проект запускается командой в терминале:
