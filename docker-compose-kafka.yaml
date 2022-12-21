@@ -63,7 +63,7 @@ services:
 
  predict_api:
   build:
-    context: ./${VERSION}
+    context: ./kafka_version
     dockerfile: Dockerfile-predict
 
   env_file:
@@ -90,7 +90,7 @@ services:
 
  test_task_app:
   build:
-    context: ./${VERSION}
+    context: ./kafka_version
     dockerfile: Dockerfile-app
 
   env_file:
