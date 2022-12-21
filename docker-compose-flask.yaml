@@ -24,12 +24,16 @@ services:
 
  predict_api:
   build:
+    context: ./flask_version
     dockerfile: Dockerfile-predict
-    context: .
+
+  env_file:
+    - .env
 
   environment:
     - FLASK_RUN_HOST=${PREDICT_API_HOST}
     - FLASK_PORT=${PREDICT_API_PORT}
+    - MODEL_DIR=${MODEL_DIR}
 
   command: >
     sh -c "python predictAPI.py"
@@ -41,8 +45,12 @@ services:
 
  test_task_app:
   build:
+   context: ./flask_version
    dockerfile: Dockerfile-app
-   context: .
+
+  env_file:
+    - .env
+
   command: >
    sh -c "python manage.py makemigrations RevenuePredict
           python manage.py migrate

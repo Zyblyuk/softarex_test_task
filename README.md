@@ -4,14 +4,23 @@
 
 # Запуск Проекта
 
-Нужно скачать данный [по ссылке](https://drive.google.com/file/d/156z3O_wkgRU4REbalXBmG9Vup5jJ4cA-/view) и забросить их в папку EnsembleTreeModel,
-чтобы было EnsembleTreeModel/income-prediction/train.csv
+В проекте реализованно две версии kafka и flask
+
+Нужно скачать данный [по ссылке](https://drive.google.com/file/d/156z3O_wkgRU4REbalXBmG9Vup5jJ4cA-/view) 
+и забросить их в папку EnsembleTreeModel,
+чтобы было VERSION/EnsembleTreeModel/income-prediction/train.csv,
+где VERSION выбранная вами версия, либо "flask_version", либо "kafka_version"
 
 
-Проект запускается командой в терминале:
+Проект запускается командой в терминале для flask версии:
 ```
-docker-compose up 
+docker-compose -f docker-compose-flask.yaml up
 ```
+Проект запускается командой в терминале для kafka версии:
+```
+docker-compose -f docker-compose-kafka.yaml up
+```
+
 После чего он установит все зависимости и запустит контейнер
 
 ![alt text](https://github.com/Zyblyuk/softarex_test_task/blob/master/images/dc_scr.png)

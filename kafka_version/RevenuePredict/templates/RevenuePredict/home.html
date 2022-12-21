@@ -1,0 +1,59 @@
+{% extends "base_template.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3>Welcome, {{ user.get_username }}</h3>
+
+        <table>
+            <tr>
+                <td class="border-left">
+                    <a href="{% url 'logout'%}">
+                        <button class="btn-info">Logout</button>
+                    </a>
+
+                </td>
+
+                <td class="border-right">
+                    <a href="{% url 'history'%}">
+                        <button class="btn-info">History</button>
+                    </a>
+                </td>
+
+                <td class="border-right">
+                    <a href="{% url 'profile'%}">
+                        <button class="btn-info">Profile</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <form action="{% url 'home' %}" method="POST">
+            {% csrf_token %}
+            <table>
+                <br>
+                {{ predict_table_form.as_table }}
+            </table>
+
+            {% if revenue %}
+                <label><input type="text" name="revenue" value="{{ revenue }}" readonly></label>
+            {% endif %}
+            <br>
+            <input name="submit" type="submit" value="Submit">
+            <input name="save_json" type="submit" value="Save to Json file">
+        </form>
+
+    {% else %}
+        <h3>Welcome. Please log in.</h3>
+
+        <a href="{% url 'login'%}">
+            <button class="btn-info">Login</button>
+        </a>
+
+        <a href="{% url 'register'%}">
+            <button class="btn-info">Register</button>
+        </a>
+
+    {% endif %}
+{% endblock %}

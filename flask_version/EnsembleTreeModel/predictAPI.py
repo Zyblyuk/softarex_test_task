@@ -13,7 +13,7 @@ columns = ['Open Date', 'City Group',
            'P1', 'P2', 'P6', 'P7','P11',
            'P17', 'P21', 'P22', 'P28']
 
-filename = 'model/EnsembleTreeModel.pkl'
+filename = os.environ.get("MODEL_DIR")
 model = pickle.load(open(filename, 'rb'))
 
 @app.route('/predict')
@@ -32,7 +32,7 @@ def user():
 
 if __name__ == "__main__":
 
-    host = os.environ["FLASK_RUN_HOST"],
-    port = int(os.environ["FLASK_PORT"]),
+    host = os.environ.get("FLASK_RUN_HOST")
+    port = int(os.environ.get("FLASK_PORT"))
 
-    app.run(host=host[0], port=port[0], debug=False)
+    app.run(host=host, port=port, debug=False)

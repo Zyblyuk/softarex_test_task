@@ -1,0 +1,51 @@
+{% extends "base_template.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+
+        <a href="{% url 'home'%}"><button class="btn-info">Back</button></a>
+
+        <form action="{% url 'history' %}" method="POST">
+            {% csrf_token %}
+            {% if db_list %}
+                <button name="clear_history" class="btn-info">Clear History</button>
+                <button name="save_json" class="btn-info">Save History</button>
+            {% endif %}
+        </form>
+
+        <table class="table">
+            <tr>
+                <th>OpenDate</th>
+                <th>CityGroup</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th>P6</th>
+                <th>P7</th>
+                <th>P11</th>
+                <th>P17</th>
+                <th>P21</th>
+                <th>P22</th>
+                <th>P28</th>
+                <th>revenue</th>
+            </tr>
+            {% for item in db_list %}
+            <tr>
+                <td class="float_numbers">{{ item.OpenDate }}</td>
+                <td class="float_numbers">{{ item.CityGroup }}</td>
+                <td class="float_numbers">{{ item.P1 }}</td>
+                <td class="float_numbers">{{ item.P2 }}</td>
+                <td class="float_numbers">{{ item.P6 }}</td>
+                <td class="float_numbers">{{ item.P7 }}</td>
+                <td class="float_numbers">{{ item.P11 }}</td>
+                <td class="float_numbers">{{ item.P17 }}</td>
+                <td class="float_numbers">{{ item.P21 }}</td>
+                <td class="float_numbers">{{ item.P22 }}</td>
+                <td class="float_numbers">{{ item.P28 }}</td>
+                <td class="float_numbers">{{ item.revenue }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}
